@@ -13,6 +13,7 @@ namespace EZBlocker
     {
         private const string ua = @"Mozilla/4.0 (compatible; MSIE 8.0; Windows NT 6.1; WOW64; Trident/4.0; SLCC2; .NET CLR 2.0.50727; .NET CLR 3.5.30729; .NET CLR 3.0.30729; .NET4.0C; .NET4.0E)";
         private const string port = ":4371";
+        private const string port_old = ":4380";
 
         private static string oauthToken;
         private static string csrfToken;
@@ -160,7 +161,10 @@ namespace EZBlocker
             {
                 hostname = new Random(Environment.TickCount).Next(100000, 100000000).ToString();
             }
-            return "https://" + hostname + ".spotilocal.com" + port + path;
+            if (Main.oldSpotify)
+              return "http://" + hostname + ".spotilocal.com" + port_old + path;
+            else
+              return "https://" + hostname + ".spotilocal.com" + port + path;
         }
 
         private static string GetPage(string URL)

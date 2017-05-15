@@ -16,6 +16,7 @@ namespace EZBlocker
     {
         private bool muted = false;
         private bool spotifyMute = false;
+        public static bool oldSpotify = false;
         private float volume = 0.9f;
         private string lastArtistName = "";
         private int exitTolerance = 0;
@@ -445,6 +446,15 @@ namespace EZBlocker
             Properties.Settings.Default.Save();
         }
 
+        private void OldSpotifyCheckBox_CheckedChanged(object sender, EventArgs e)
+        {
+            oldSpotify = OldSpotifyCheckbox.Checked;
+            if (visitorId == null) return; // Still setting up UI
+            LogAction("/settings/oldSpotify/" + oldSpotify.ToString());
+            Properties.Settings.Default.OldSpotify = oldSpotify;
+            Properties.Settings.Default.Save();
+        }
+
         private void SkipAdsCheckbox_Click(object sender, EventArgs e)
         {
             if (visitorId == null) return; // Still setting up UI
@@ -606,6 +616,7 @@ namespace EZBlocker
 
             // Set up UI
             SpotifyMuteCheckbox.Checked = Properties.Settings.Default.SpotifyMute;
+            OldSpotifyCheckbox.Checked = Properties.Settings.Default.OldSpotify;
             if (File.Exists(hostsPath))
             {
                 string hostsFile = File.ReadAllText(hostsPath);
