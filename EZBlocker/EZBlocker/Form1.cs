@@ -292,6 +292,7 @@ namespace EZBlocker
          **/
         private void CheckUpdate()
         {
+/*
             if (Properties.Settings.Default.UpdateSettings) // If true, then first launch of latest EZBlocker
             {
                 try
@@ -326,6 +327,7 @@ namespace EZBlocker
             {
                 MessageBox.Show("Error checking for update.", "EZBlocker");
             }
+*/
         }
 
         /**
@@ -356,6 +358,7 @@ namespace EZBlocker
          **/
         private void LogAction(string pagename)
         {
+/*
             try
             {
                 lasttime = DateTime.Now.Ticks;
@@ -379,7 +382,8 @@ namespace EZBlocker
                     client.DownloadData(statsRequest);
                 }
             }
-            catch { /*ignore*/ }
+            catch {  }
+*/
         }
 
         private void RestoreFromTray()
@@ -433,7 +437,7 @@ namespace EZBlocker
             {
                 this.ShowInTaskbar = false;
                 this.FormBorderStyle = FormBorderStyle.FixedToolWindow;
-                Notify("EZBlocker is hidden. Double-click this icon to restore.");
+                //Notify("EZBlocker is hidden. Double-click this icon to restore.");
             }
         }
 
@@ -531,9 +535,11 @@ namespace EZBlocker
 
         private void WebsiteLink_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
+/*
             MessageBox.Show("Please leave a comment describing one of these problems:\r\n\r\n1. Audio ads are not muted\r\n2. Audio ads are not blocked but muted\r\n3. Banner ads are not blocked\r\n\r\nNot using one of these will cause your comment to be deleted.\r\n\r\nPlease note that #2 and #3 are experimental features and not guaranteed to work.", "EZBlocker");
             Process.Start(website);
             LogAction("/button/website");
+*/
         }
 
         private void Main_Load(object sender, EventArgs e)
@@ -680,7 +686,9 @@ namespace EZBlocker
 
         private void websiteToolStripMenuItem_Click(object sender, EventArgs e)
         {
+/*
             Process.Start(website);
+*/
         }
 
         protected override void OnFormClosing(FormClosingEventArgs e)
