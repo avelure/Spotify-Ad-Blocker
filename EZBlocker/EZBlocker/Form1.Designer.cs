@@ -44,6 +44,7 @@
             this.StatusLabel = new System.Windows.Forms.Label();
             this.BlockBannersCheckbox = new System.Windows.Forms.CheckBox();
             this.StartupCheckbox = new System.Windows.Forms.CheckBox();
+            this.OldSpotifyCheckbox = new System.Windows.Forms.CheckBox();
             this.websiteToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.NotifyIconContextMenu.SuspendLayout();
             this.SuspendLayout();
@@ -179,11 +180,23 @@
             this.websiteToolStripMenuItem.Text = "Website";
             this.websiteToolStripMenuItem.Click += new System.EventHandler(this.websiteToolStripMenuItem_Click);
             // 
+            // OldSpotifyCheckbox
+            // 
+            this.OldSpotifyCheckbox.AutoSize = true;
+            this.OldSpotifyCheckbox.Location = new System.Drawing.Point(147, 48);
+            this.OldSpotifyCheckbox.Name = "OldSpotifyCheckbox";
+            this.OldSpotifyCheckbox.Size = new System.Drawing.Size(77, 17);
+            this.OldSpotifyCheckbox.TabIndex = 12;
+            this.OldSpotifyCheckbox.Text = "Old Spotify";
+            this.OldSpotifyCheckbox.UseVisualStyleBackColor = true;
+            this.OldSpotifyCheckbox.CheckedChanged += new System.EventHandler(this.OldSpotifyCheckBox_CheckedChanged);
+            // 
             // Main
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(230, 139);
+            this.Controls.Add(this.OldSpotifyCheckbox);
             this.Controls.Add(this.StartupCheckbox);
             this.Controls.Add(this.BlockBannersCheckbox);
             this.Controls.Add(this.StatusLabel);
@@ -224,6 +237,7 @@
         private System.Windows.Forms.ToolStripSeparator separatorToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem exitToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem websiteToolStripMenuItem;
+        private System.Windows.Forms.CheckBox OldSpotifyCheckbox;
     }
 }
 
