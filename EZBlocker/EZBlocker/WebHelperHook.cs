@@ -11,8 +11,6 @@ namespace EZBlocker
 {
     class WebHelperHook
     {
-        private const string ua = @"Mozilla/4.0 (compatible; MSIE 8.0; Windows NT 6.1; WOW64; Trident/4.0; SLCC2; .NET CLR 2.0.50727; .NET CLR 3.5.30729; .NET CLR 3.0.30729; .NET4.0C; .NET4.0E)";
-        private const string port = ":4371";
         private const string port_old = ":4380";
 
         private static string oauthToken;
@@ -34,6 +32,9 @@ namespace EZBlocker
             }
 
             string result = "";
+
+            WebHelperResult whr = new WebHelperResult();
+
             try
             {
                 result = GetPage(GetURL("/remote/status.json" + "?oauth=" + oauthToken + "&csrf=" + csrfToken));
@@ -43,9 +44,10 @@ namespace EZBlocker
             {
                 Debug.WriteLine(ex);
                 File.AppendAllText(Main.logPath, "WebHelperHook: " + ex.Message + "\r\n");
+                whr.isRunning = false;
+                return whr;
             }
             
-            WebHelperResult whr = new WebHelperResult();
 
             // Process data
             using (StringReader reader = new StringReader(result))
@@ -171,6 +173,12 @@ namespace EZBlocker
         {
             Debug.WriteLine("Getting page " + URL);
             WebClient w = new WebClient();
+
+            if (URL.Contains("spotilocal"))
+            {
+                w.Proxy = null;
+            }
+
             w.Headers.Add("user-agent", ua);
             w.Headers.Add("Origin", "https://open.spotify.com");
             ServicePointManager.ServerCertificateValidationCallback = delegate { return true; };
