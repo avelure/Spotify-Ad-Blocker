@@ -34,7 +34,7 @@ namespace EZBlocker
 
         public bool IsPlaying()
         {
-            return !WindowName.Equals("") && !WindowName.Equals("Drag") && (AudioUtils.GetPeakVolume(VolumeControl) > 0 || WindowName.Contains(" - "));
+            return !WindowName.Equals("") && !WindowName.Equals("Drag") && (AudioUtils.GetPeakVolume(VolumeControl) > 6E-8 || WindowName.Contains(" - "));
         }
 
         public bool IsAdPlaying()
@@ -43,7 +43,7 @@ namespace EZBlocker
             {
                 if (WindowName.Equals("Spotify") && SpotifyAdTolerance < 3) // Prevent user pausing Spotify from being detected as ad (PeakVolume needs time to adjust)
                 {
-                    Debug.WriteLine("Tolerance " + SpotifyAdTolerance);
+                    Debug.WriteLine("Tolerance " + SpotifyAdTolerance + " Peakvol " + AudioUtils.GetPeakVolume(VolumeControl));
                     SpotifyAdTolerance++;
                     return false;
                 }
