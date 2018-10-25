@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Runtime.InteropServices;
 
@@ -65,7 +66,7 @@ namespace EZBlocker
             return peak * 100;
         }
 
-        public static ISimpleAudioVolume GetVolumeControl(Process p)
+        public static VolumeControl GetVolumeControl(HashSet<int> p)
         {
             if (p == null) return null;
 
@@ -74,6 +75,7 @@ namespace EZBlocker
             IMMDevice speakers = null;
             IAudioSessionManager2 sm = null;
             IAudioSessionEnumerator sessionEnumerator = null;
+            int ctlPid = 0;
             try {
                 // Get default device
                 deviceEnumerator = (IMMDeviceEnumerator)new MMDeviceEnumerator();
@@ -101,9 +103,8 @@ namespace EZBlocker
                             continue;
 
                         // Get and compare process id
-                        int ctlPid;
                         ctl.GetProcessId(out ctlPid);
-                        if (ctlPid == p.Id)
+                        if (p.Contains(ctlPid))
                         {
                             volumeControl = ctl as ISimpleAudioVolume;
                             break;
@@ -122,8 +123,22 @@ namespace EZBlocker
                 if (speakers != null) Marshal.ReleaseComObject(speakers);
                 if (deviceEnumerator != null) Marshal.ReleaseComObject(deviceEnumerator);
             }
+            
+            if (volumeControl != null)
+                return new VolumeControl(ctlPid, volumeControl);
+            return null;
+        }
 
-            return volumeControl;
+        public class VolumeControl
+        {
+            public int ProcessId;
+            public ISimpleAudioVolume Control;
+
+            public VolumeControl(int pid, ISimpleAudioVolume control)
+            {
+                ProcessId = pid;
+                Control = control;
+            }
         }
 
         // Core Audio Imports
