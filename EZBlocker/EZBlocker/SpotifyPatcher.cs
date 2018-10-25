@@ -32,7 +32,7 @@ namespace EZBlocker
                 { "UPGRADE_TOOLTIP_TEXT", "'Open EZBlocker Website'" },
                 { "<script type=\"text/javascript\" src=\"/zlink.bundle.js\"></script>", @"<script src=/zlink.bundle.js></script><script>function openWebsite(){window.open('{WEBSITE}')}w=new Worker('worker.js'),w.onmessage=function(e){w.postMessage(document.getElementById('player-button-next').disabled)},w.postMessage(document.getElementById('player-button-next').disabled)</script>".Replace("{WEBSITE}", Main.website) }
             };
-            worker = @"var sendEZB=function(e){var t=new XMLHttpRequest;t.open('GET','http://localhost:19691/'+e,!0),t.send()};self.addEventListener('message',function(e){sendEZB(e.data),setTimeout(function(){postMessage('ready')},300)},!1);";
+            worker = @"var _p;var sendEZB=function(e){if (_p === e) return;_p = e;var t=new XMLHttpRequest;t.open('GET','http://localhost:19691/'+e,!0),t.send()};self.addEventListener('message',function(e){sendEZB(e.data),setTimeout(function(){postMessage('ready')},300)},!1);";
         }
 
         public bool Patch()
