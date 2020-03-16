@@ -77,8 +77,6 @@ namespace EZBlocker
                 {
                     p.Kill();
                 }
-            } catch (Exception e) {
-                Debug.WriteLine(e);
             }
             catch (Exception e)
             {
