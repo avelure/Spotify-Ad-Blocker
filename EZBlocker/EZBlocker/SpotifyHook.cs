@@ -109,8 +109,12 @@ namespace EZBlocker
             VolumeControl = AudioUtils.GetVolumeControl(Children);
             if (VolumeControl != null)
             {
-                Spotify = Process.GetProcessById(VolumeControl.ProcessId);
-                return true;
+                try 
+                { 
+                    Spotify = Process.GetProcessById(VolumeControl.ProcessId);
+                    return true;
+                } 
+                catch (Exception) {}
             }
 
             return false;
