@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.IO;
 using System.Net;
 using System.Reflection;
@@ -20,7 +20,6 @@ namespace EZBlocker
         private string lastMessage = "";
         private ToolTip artistTooltip = new ToolTip();
 
-        private readonly string spotifyPath = Environment.GetEnvironmentVariable("APPDATA") + @"\Spotify\spotify.exe";
         private readonly string volumeMixerPath = Environment.GetEnvironmentVariable("WINDIR") + @"\System32\SndVol.exe";
         private readonly string hostsPath = Environment.GetEnvironmentVariable("WINDIR") + @"\System32\drivers\etc\hosts";
 
@@ -69,14 +68,14 @@ namespace EZBlocker
                             LogAction("/mute/" + artist);
                         }
                     }
-                    else if (hook.IsPlaying() && !hook.WindowName.Equals("Spotify")) // Normal music
+                    else if (hook.IsPlaying() && !hook.WindowName.Equals("Spotify Free")) // Normal music
                     {
                         if (muted)
                         {
                             Thread.Sleep(500); // Give extra time for ad to change out
                             Mute(false);
                         }
-                        if (MainTimer.Interval != 400) MainTimer.Interval = 400;
+                        if (MainTimer.Interval != 200) MainTimer.Interval = 200;
 
                         string artist = hook.GetArtist();
                         string message = Properties.strings.StatusPlaying + " " + Truncate(artist);
@@ -88,7 +87,7 @@ namespace EZBlocker
                             LogAction("/play/" + artist);
                         }
                     }
-                    else if (hook.WindowName.Equals("Spotify"))
+                    else if (hook.WindowName.Equals("Spotify Free"))
                     {
                         string message = Properties.strings.StatusPaused;
                         if (lastMessage != message)
@@ -196,14 +195,24 @@ namespace EZBlocker
                 Properties.Settings.Default.Save();
             }
 
+            string spotifyPath = GetSpotifyPath();
+            if (spotifyPath != "")
+            {
+                Properties.Settings.Default.SpotifyPath = spotifyPath;
+                Properties.Settings.Default.Save();
+            } else
+            {
+                spotifyPath = Environment.GetEnvironmentVariable("APPDATA") + @"\Spotify\spotify.exe";
+            }
+
             // Start Spotify and give EZBlocker higher priority
             try
             {
-                if (Properties.Settings.Default.StartSpotify && File.Exists(spotifyPath) && Process.GetProcessesByName("spotify").Length < 1)
-                {
-                    Process.Start(spotifyPath);
-                }
                 Process.GetCurrentProcess().PriorityClass = ProcessPriorityClass.High; // Windows throttles down when minimized to task tray, so make sure EZBlocker runs smoothly
+                if (Properties.Settings.Default.StartSpotify && File.Exists(Properties.Settings.Default.SpotifyPath) && Process.GetProcessesByName("spotify").Length < 1)
+                {
+                    Process.Start(Properties.Settings.Default.SpotifyPath);
+                }
             }
             catch (Exception) {}
 
@@ -252,22 +261,16 @@ namespace EZBlocker
             Task.Run(() => CheckUpdate());
         }
 
-        private void CheckPatch(bool launch)
+        private string GetSpotifyPath()
         {
-            string currentVersion = FileVersionInfo.GetVersionInfo(spotifyPath).FileVersion;
-            if (!Properties.Settings.Default.LastPatched.Equals(currentVersion) || launch) // Always attempt to patch on launch
+            foreach (Process p in Process.GetProcessesByName("spotify"))
             {
-                // MessageBox.Show("EZBlocker needs to modify Spotify.\r\n\r\nTo return to the original, right click the EZBlocker icon in your task tray and choose 'Remove Patch'.", "EZBlocker");
-                if (!patcher.Patch())
+                if (p.MainWindowTitle.Length > 1)
                 {
-                    MessageBox.Show(Properties.strings.PatchErrorMessageBox, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                }
-                else
-                {
-                    Properties.Settings.Default.LastPatched = currentVersion;
-                    Properties.Settings.Default.Save();
+                    return p.MainModule.FileName;
                 }
             }
+            return "";
         }
 
         private void RestoreFromTray()
@@ -385,8 +388,11 @@ namespace EZBlocker
         private void WebsiteLink_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
 /*
-            MessageBox.Show(Properties.strings.ReportProblemMessageBox.Replace("{0}", Assembly.GetExecutingAssembly().GetName().Version.ToString()).Replace("{1}", FileVersionInfo.GetVersionInfo(spotifyPath).FileVersion), "EZBlocker");
-            Clipboard.SetText(Properties.strings.ReportProblemClipboard.Replace("{0}", Assembly.GetExecutingAssembly().GetName().Version.ToString()).Replace("{1}", FileVersionInfo.GetVersionInfo(spotifyPath).FileVersion));
+            if (File.Exists(Properties.Settings.Default.SpotifyPath))
+            {
+                MessageBox.Show(Properties.strings.ReportProblemMessageBox.Replace("{0}", Assembly.GetExecutingAssembly().GetName().Version.ToString()).Replace("{1}", FileVersionInfo.GetVersionInfo(Properties.Settings.Default.SpotifyPath).FileVersion), "EZBlocker");
+                Clipboard.SetText(Properties.strings.ReportProblemClipboard.Replace("{0}", Assembly.GetExecutingAssembly().GetName().Version.ToString()).Replace("{1}", FileVersionInfo.GetVersionInfo(Properties.Settings.Default.SpotifyPath).FileVersion));
+            }
             Process.Start(website);
             LogAction("/button/website");
 */
